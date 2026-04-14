@@ -1,0 +1,466 @@
+/* Import Bootstrap */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* Custom Variables - Ultra Premium Sky Theme */
+:root {
+  --primary-color: #0284c7; /* Prominent Sky Blue */
+  --primary-light: #38bdf8; /* Lighter Sky Blue */
+  --primary-gradient: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+  --accent-green: #10b981;
+  --text-dark: #0f172a;     /* Deep Slate for high contrast */
+  --text-muted: #475569;    /* Rich muted gray */
+  --border-color: rgba(14, 165, 233, 0.15); /* Very soft blue border */
+  --bg-light: #f4fafd;      /* Pristine off-sky white */
+  --bg-card: rgba(255, 255, 255, 0.95); /* Semi-transparent white for glass effect */
+  --shadow-sm: 0 4px 6px -1px rgba(2, 132, 199, 0.05), 0 2px 4px -2px rgba(2, 132, 199, 0.05);
+  --shadow-md: 0 12px 24px -8px rgba(2, 132, 199, 0.15);
+  --shadow-lg: 0 25px 50px -12px rgba(2, 132, 199, 0.25);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: var(--bg-light);
+  /* Very prominent, beautiful soft mesh gradient background */
+  background-image: 
+    radial-gradient(circle at 15% 10%, #ffffff 0%, transparent 40%),
+    radial-gradient(circle at 85% 90%, #e0f2fe 0%, transparent 50%),
+    linear-gradient(180deg, #f0f9ff 0%, #f8fafc 100%);
+  background-attachment: fixed;
+  color: var(--text-dark);
+  min-height: 100vh;
+}
+
+/* Typography */
+h1, h2, h3, h4, h5, h6 {
+  color: var(--text-dark);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+
+.text-muted-custom {
+  color: var(--text-muted);
+}
+
+/* Cards (Ultra Premium Frosted Glass) */
+.card-custom, .card, .ride-card {
+  background: var(--bg-card) !important;
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 20px !important;
+  box-shadow: var(--shadow-md);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+/* Add a very tiny subtle inner white glow to cards */
+.ride-card::before, .card::before {
+  content: "";
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  pointer-events: none;
+}
+
+.ride-card:hover {
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-4px);
+  border-color: var(--border-color);
+}
+
+.card-clickable {
+  cursor: pointer;
+}
+
+/* Base Buttons */
+.btn {
+  border-radius: 12px !important;
+  font-weight: 600 !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  letter-spacing: 0.01em;
+  padding: 10px 24px;
+}
+
+/* Primary Button Overrides (Vibrant Gradient) */
+.btn-primary, .btn-primary-custom {
+  background: var(--primary-gradient) !important;
+  border: none !important;
+  color: white !important;
+  box-shadow: 0 8px 16px -4px rgba(2, 132, 199, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  text-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover, .btn-primary-custom:hover {
+  background: linear-gradient(135deg, #1ea3ea 0%, #0369a1 100%) !important;
+  box-shadow: 0 12px 20px -4px rgba(2, 132, 199, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+  transform: translateY(-2px);
+}
+
+.btn-primary:active, .btn-primary-custom:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 4px -2px rgba(2, 132, 199, 0.4) !important;
+}
+
+/* Outline Custom Button */
+.btn-outline-custom {
+  background-color: rgba(255, 255, 255, 0.5);
+  border: 2px solid var(--primary-light);
+  color: var(--primary-color);
+  backdrop-filter: blur(4px);
+}
+
+.btn-outline-custom:hover {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+  color: white;
+  box-shadow: 0 8px 16px -4px rgba(2, 132, 199, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Secondary Buttons */
+.btn-outline-secondary {
+  border-color: #cbd5e1 !important;
+  color: var(--text-muted) !important;
+  background: rgba(255,255,255,0.7) !important;
+}
+
+.btn-outline-secondary:hover {
+  background-color: #f1f5f9 !important;
+  border-color: #94a3b8 !important;
+  color: var(--text-dark) !important;
+}
+
+/* Form Inputs */
+.form-control, .form-control-custom, .form-select {
+  border: 1px solid var(--border-color) !important;
+  border-radius: 12px !important;
+  padding: 14px 18px !important;
+  font-size: 15px !important;
+  background-color: rgba(255, 255, 255, 0.7) !important;
+  backdrop-filter: blur(8px);
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  color: var(--text-dark) !important;
+}
+
+.form-control:focus, .form-control-custom:focus, .form-select:focus {
+  background-color: #ffffff !important;
+  border-color: var(--primary-light) !important;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.15), 0 4px 6px -1px rgba(0,0,0,0.05) !important;
+  outline: none;
+}
+
+.form-control::placeholder, .form-control-custom::placeholder {
+  color: #94a3b8 !important;
+}
+
+/* Dashboard Specific Icons */
+/* Overriding the bg-primary div from dashboard directly since it used bg-primary class */
+.bg-primary.rounded-circle {
+  background: var(--primary-gradient) !important;
+  box-shadow: 0 8px 16px -4px rgba(2, 132, 199, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.3) !important;
+}
+
+/* Badge */
+.badge-status {
+  background: var(--primary-gradient);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 8px rgba(2, 132, 199, 0.25);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.badge-active {
+  background-color: var(--text-dark);
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+/* Tabs */
+.nav-tabs-custom {
+  border-bottom: 2px solid var(--border-color);
+  gap: 8px;
+}
+
+.nav-tabs-custom .nav-link {
+  color: var(--text-muted);
+  border: none;
+  border-bottom: 3px solid transparent;
+  padding: 14px 28px;
+  font-weight: 600;
+  background: transparent;
+  transition: all 0.2s ease;
+  margin-bottom: -2px;
+  border-radius: 12px 12px 0 0;
+  font-size: 15px;
+}
+
+.nav-tabs-custom .nav-link:hover {
+  color: var(--primary-color);
+  background-color: rgba(2, 132, 199, 0.04);
+}
+
+.nav-tabs-custom .nav-link.active {
+  color: var(--primary-color);
+  border-bottom: 3px solid var(--primary-color);
+  background: linear-gradient(180deg, rgba(2, 132, 199, 0.05) 0%, transparent 100%);
+}
+
+/* Header */
+.header-nav {
+  background: rgba(255, 255, 255, 0.75) !important;
+  backdrop-filter: blur(16px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.5) !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
+  padding: 16px 0 !important;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo-text {
+  font-size: 26px;
+  font-weight: 900;
+  background: linear-gradient(135deg, var(--text-dark) 50%, var(--primary-color) 70%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  letter-spacing: -0.05em;
+  transition: all 0.3s ease;
+  padding: 4px 8px; /* Prevent clipping at edges */
+  line-height: 1.2;
+}
+
+.logo-text:hover {
+  transform: translateY(-1px);
+  filter: brightness(1.1);
+}
+
+.logo-icon {
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-size: 32px;
+  filter: drop-shadow(0 4px 6px rgba(114, 210, 255, 0.35));
+  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  padding: 4px; /* Give space for the shadow and edges */
+}
+
+.logo-text:hover .logo-icon {
+  transform: rotate(-10deg) scale(1.1);
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 0;
+  border-bottom: 1px solid rgba(14, 165, 233, 0.1);
+  background: transparent;
+  margin-bottom: 32px;
+}
+
+.back-link {
+  color: var(--text-muted);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  padding: 10px 16px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.6);
+  border: 1px solid rgba(255,255,255,0.8);
+  backdrop-filter: blur(8px);
+}
+
+/* Empty State */
+.empty-state {
+  text-align: center;
+  padding: 80px 24px;
+  background: rgba(255, 255, 255, 0.4);
+  border: 2px dashed rgba(14, 165, 233, 0.2);
+  border-radius: 20px;
+  backdrop-filter: blur(8px);
+}
+
+.empty-state-icon {
+  font-size: 64px;
+  background: var(--primary-gradient);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 24px;
+  display: inline-block;
+  filter: drop-shadow(0 8px 8px rgba(2, 132, 199, 0.2));
+}
+
+/* Ride Card Specifics */
+.ride-card {
+  padding: 28px;
+  margin-bottom: 24px;
+}
+
+.ride-info-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  color: var(--text-muted);
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 14px;
+}
+
+.ride-info-item i {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--bg-light);
+  color: var(--primary-color);
+  border-radius: 10px;
+  font-size: 16px;
+  box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+/* Summary Card */
+.summary-card {
+  background: rgba(255,255,255,0.85);
+  border-left: 5px solid var(--primary-color);
+  border-radius: 0 16px 16px 0;
+  padding: 24px 28px;
+  box-shadow: var(--shadow-sm);
+  backdrop-filter: blur(12px);
+  position: relative;
+  overflow: hidden;
+}
+
+.summary-card::after {
+  content: '';
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  background: linear-gradient(90deg, rgba(2, 132, 199, 0.03) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.summary-label {
+  color: var(--primary-color);
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 4px;
+  display: block;
+}
+
+/* Auth Pages */
+.auth-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  /* Extremely cinematic radial glow for auth */
+  background: radial-gradient(circle at 50% 30%, #e0f2fe 0%, #f4fafd 50%, #eef6fc 100%);
+}
+
+.auth-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  border-radius: 32px;
+  box-shadow: 0 20px 60px -15px rgba(2, 132, 199, 0.2), 0 0 0 1px rgba(255,255,255,0.4) inset;
+  padding: 56px;
+  width: 100%;
+  max-width: 480px;
+}
+
+.auth-logo {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 48px;
+}
+
+.auth-logo .logo-icon {
+  font-size: 36px;
+}
+
+.auth-logo .logo-text {
+  font-size: 30px;
+}
+
+/* Animations */
+@keyframes fadeInSlideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.card, .ride-card, .auth-card {
+  animation: fadeInSlideUp 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+/* Navbar */
+.navbar {
+  padding-top: 1rem !important;
+  padding-bottom: 1rem !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .auth-card {
+    padding: 32px 24px;
+    border-radius: 24px;
+  }
+  
+  .container {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  .ride-card {
+    padding: 20px;
+  }
+}
+
+/* Ride Summary Design */
+.summary-card {
+  background-color: rgba(241, 245, 249, 0.8);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+.summary-label {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Leaflet Marker Transitions */
+.leaflet-marker-icon {
+  transition: transform 2s linear !important; 
+}
