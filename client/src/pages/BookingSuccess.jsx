@@ -40,15 +40,15 @@ const BookingSuccess = () => {
             <div className="row g-3">
                <div className="col-6">
                  <small className="text-muted d-block text-uppercase fw-bold" style={{ fontSize: '0.7rem' }}>Driver</small>
-                 <span className="fw-bold">{booking.riderName}</span>
+                 <span className="fw-bold">{booking.driverName}</span>
                </div>
                <div className="col-6">
                  <small className="text-muted d-block text-uppercase fw-bold" style={{ fontSize: '0.7rem' }}>Contact Number</small>
                  <div className="d-flex align-items-center gap-2">
-                   <span className="fw-bold">{booking.phone}</span>
+                   <span className="fw-bold">{booking.driverPhone}</span>
                    <button 
                      className="btn btn-sm btn-light p-1 border-0 rounded-circle shadow-sm" 
-                     onClick={() => handleCopy(booking.phone)}
+                     onClick={() => handleCopy(booking.driverPhone)}
                      title="Copy contact number"
                    >
                      {copied ? <i className="bi bi-check-circle-fill text-success"></i> : <i className="bi bi-copy text-muted"></i>}
