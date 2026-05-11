@@ -1,6 +1,7 @@
 {
   "name": "campusride-server",
   "version": "1.0.0",
+  "license": "MIT",
   "main": "server.js",
   "type": "module",
   "scripts": {

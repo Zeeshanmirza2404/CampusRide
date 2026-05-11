@@ -52,8 +52,8 @@ const RideCard = ({
       if (result.success) {
         const bookingData = {
           id: result.booking.id,
-          riderName: driverName,
-          phone: driverPhone,
+          driverName: driverName,
+          driverPhone: driverPhone,
           pickup,
           drop,
           date: `${formatDate(date)} at ${time}`,
@@ -120,8 +120,8 @@ const RideCard = ({
               onClick={() => {
                 const bookingData = {
                   id: rideId,
-                  riderName: driverName,
-                  phone: driverPhone,
+                  driverName: driverName,
+                  driverPhone: driverPhone,
                   pickup,
                   drop,
                   date: `${formatDate(date)} at ${time}`,
@@ -151,7 +151,7 @@ const RideCard = ({
               }}
             >
               <i className={`bi ${trackedRideId === rideId ? "bi-geo-alt-fill" : "bi-geo-alt"}`}></i>{" "}
-              {trackedRideId === rideId ? "Tracking Active" : "Track Connection"}
+              {trackedRideId === rideId ? "Locating.." : "Track"}
             </button>
           </div>
         </div>
