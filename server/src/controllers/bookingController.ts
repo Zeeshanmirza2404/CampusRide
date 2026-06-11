@@ -1,11 +1,12 @@
+import { Request, Response } from "express";
 import Booking from "../models/Booking.js";
 import Ride from "../models/Ride.js";
 import User from "../models/User.js";
 
-export const createBooking = async (req, res) => {
+export const createBooking = async (req: Request, res: Response): Promise<any> => {
   try {
     const { rideId, passengerName, passengerPhone } = req.body;
-    const passengerId = req.user.id;
+    const passengerId = req.user!.id;
 
     // Check if ride exists
     const ride = await Ride.findById(rideId);
@@ -64,20 +65,22 @@ export const createBooking = async (req, res) => {
       })
       .populate("passenger");
 
+    const populatedBookingAny = populatedBooking as any; // TODO: type this properly
+
     res.status(201).json({
-      id: populatedBooking._id,
-      rideId: populatedBooking.ride._id,
-      passengerId: populatedBooking.passenger._id,
-      passengerName: populatedBooking.passengerName,
-      passengerPhone: populatedBooking.passengerPhone,
-      driverName: populatedBooking.ride.driver?.name || "Unknown",
-      driverPhone: populatedBooking.ride.driver?.phone || "",
-      pickup: populatedBooking.ride.pickup,
-      drop: populatedBooking.ride.drop,
-      price: populatedBooking.ride.pricePerSeat,
-      date: populatedBooking.ride.date,
-      details: populatedBooking.ride.details,
-      status: populatedBooking.status
+      id: populatedBookingAny._id,
+      rideId: populatedBookingAny.ride._id,
+      passengerId: populatedBookingAny.passenger._id,
+      passengerName: populatedBookingAny.passengerName,
+      passengerPhone: populatedBookingAny.passengerPhone,
+      driverName: populatedBookingAny.ride.driver?.name || "Unknown",
+      driverPhone: populatedBookingAny.ride.driver?.phone || "",
+      pickup: populatedBookingAny.ride.pickup,
+      drop: populatedBookingAny.ride.drop,
+      price: populatedBookingAny.ride.pricePerSeat,
+      date: populatedBookingAny.ride.date,
+      details: populatedBookingAny.ride.details,
+      status: populatedBookingAny.status
     });
   } catch (error) {
     console.error("Error creating booking:", error);
@@ -85,9 +88,9 @@ export const createBooking = async (req, res) => {
   }
 };
 
-export const getBookings = async (req, res) => {
+export const getBookings = async (req: Request, res: Response): Promise<any> => {
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     console.log("[DEBUG] Fetching bookings for user:", userId);
 
     const user = await User.findById(userId).populate({
@@ -106,7 +109,7 @@ export const getBookings = async (req, res) => {
     console.log("[DEBUG] Found bookings count:", user.bookedRides.length);
 
     res.json(
-      user.bookedRides
+      (user.bookedRides as any[]) // TODO: type this properly
       .filter((booking) => booking.ride != null)
       .map((booking) => ({
         id: booking._id,
@@ -127,7 +130,7 @@ export const getBookings = async (req, res) => {
           seatsAvailable: booking.ride.seatsAvailable,
           pricePerSeat: booking.ride.pricePerSeat,
           status: booking.ride.status,
-          details: booking.ride.details, // Add details field
+          details: booking.ride.details,
         }
       }))
     );
@@ -137,10 +140,10 @@ export const getBookings = async (req, res) => {
   }
 };
 
-export const getBookingById = async (req, res) => {
+export const getBookingById = async (req: Request, res: Response): Promise<any> => {
   try {
     const { id } = req.params;
-    const userId = req.user.id;
+    const userId = req.user!.id;
 
     const booking = await Booking.findById(id)
       .populate("ride")
@@ -150,18 +153,20 @@ export const getBookingById = async (req, res) => {
       return res.status(404).json({ message: "Booking not found" });
     }
 
+    const bookingAny = booking as any; // TODO: type this properly
+
     // Check if user is the passenger
-    if (booking.passenger._id.toString() !== userId) {
+    if (bookingAny.passenger._id.toString() !== userId) {
       return res.status(403).json({ message: "Unauthorized" });
     }
 
     res.json({
-      id: booking._id,
-      rideId: booking.ride._id,
-      passengerId: booking.passenger._id,
-      passengerName: booking.passengerName,
-      passengerPhone: booking.passengerPhone,
-      status: booking.status
+      id: bookingAny._id,
+      rideId: bookingAny.ride._id,
+      passengerId: bookingAny.passenger._id,
+      passengerName: bookingAny.passengerName,
+      passengerPhone: bookingAny.passengerPhone,
+      status: bookingAny.status
     });
   } catch (error) {
     console.error("Error fetching booking:", error);

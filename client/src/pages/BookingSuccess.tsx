@@ -1,12 +1,26 @@
 import React from "react";
 import { useLocation, Link } from "react-router-dom";
 
-const BookingSuccess = () => {
-  const { state } = useLocation();
+interface BookingInfo {
+  id: string;
+  driverName: string;
+  driverPhone: string;
+  pickup: string;
+  drop: string;
+  price: number;
+}
+
+interface LocationState {
+  booking?: BookingInfo;
+}
+
+const BookingSuccess: React.FC = () => {
+  const location = useLocation();
+  const state = location.state as LocationState | null;
   const [copied, setCopied] = React.useState(false);
   const booking = state?.booking;
 
-  const handleCopy = (text) => {
+  const handleCopy = (text: string) => {
     navigator.clipboard.writeText(text);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);

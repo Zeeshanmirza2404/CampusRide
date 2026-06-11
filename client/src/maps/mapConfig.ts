@@ -1,2 +1,1 @@
-
-export const MAP_PROVIDER = "leaflet"; // Options: "leaflet", "google"
+export const MAP_PROVIDER: "leaflet" | "google" = "leaflet"; // Options: "leaflet", "google"

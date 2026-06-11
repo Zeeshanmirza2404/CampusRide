@@ -1,11 +1,10 @@
-
-import express from "express";
+import express, { Router } from "express";
 import { createOrder, verifyPayment } from "../controllers/paymentController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
-router.post("/create-order", authMiddleware, createOrder);
-router.post("/verify", authMiddleware, verifyPayment);
+router.post("/create-order", authMiddleware as any, createOrder);
+router.post("/verify", authMiddleware as any, verifyPayment);
 
 export default router;

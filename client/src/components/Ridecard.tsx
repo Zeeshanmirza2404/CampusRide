@@ -1,12 +1,41 @@
-import React from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { useRides } from "../context/RidesContext";
 import MapProvider from "../maps/MapProvider";
-import { useState } from "react";
 import { useTracking } from "../context/TrackingContext";
 
-const RideCard = ({
+interface BookedUser {
+  id?: string;
+  name?: string;
+  phone?: string;
+}
+
+interface RideCardProps {
+  driverName?: string;
+  driverPhone?: string;
+  pickup?: string;
+  drop?: string;
+  date?: string;
+  time?: string;
+  seatsAvailable?: number;
+  pricePerSeat?: number;
+  status?: string;
+  details?: string;
+  showBookButton?: boolean;
+  isOwnRide?: boolean;
+  rideId?: string;
+  onBook?: () => void;
+  isBooking?: boolean;
+  activeTab?: string | null;
+  bookingStatus?: string | null;
+  bookedUsers?: BookedUser[];
+  pickupCoords?: { lat: number; lng: number } | null;
+  dropCoords?: { lat: number; lng: number } | null;
+  isPast?: boolean;
+}
+
+const RideCard: React.FC<RideCardProps> = ({
   driverName,
   driverPhone,
   pickup,
@@ -32,22 +61,24 @@ const RideCard = ({
   const navigate = useNavigate();
   const { user } = useAuth();
   const { bookRide } = useRides();
-  const { startTrackingSession, trackedRideId, stopTrackingSession } = useTracking();
+  const trackingCtx = useTracking();
+  const { startTrackingSession, trackedRideId, stopTrackingSession } = trackingCtx!;
   const [showMap, setShowMap] = useState(false);
   const [showPassengerDetails, setShowPassengerDetails] = useState(false);
 
-  const formatDate = (dateStr) => {
+  const formatDate = (dateStr?: string): string => {
+    if (!dateStr) return "";
     const d = new Date(dateStr);
     return d.toISOString().split("T")[0];
   };
 
-  const handleBookRide = async () => {
+  const handleBookRide = async (): Promise<void> => {
     if (onBook) {
       onBook();
     } else {
-      const result = await bookRide(rideId, user.id, {
-        name: user.name,
-        phone: user.phone,
+      const result = await bookRide(rideId!, {
+        name: user?.name,
+        phone: user?.phone,
       });
       if (result.success) {
         const bookingData = {
@@ -145,7 +176,7 @@ const RideCard = ({
                 if (trackedRideId === rideId) {
                   stopTrackingSession();
                 } else {
-                  startTrackingSession(rideId, "rider");
+                  startTrackingSession(rideId!, "rider");
                   window.scrollTo({ top: 0, behavior: "smooth" });
                 }
               }}
@@ -185,7 +216,7 @@ const RideCard = ({
                 <h6 className="card-subtitle mb-3 text-muted">
                   Booked Passengers
                 </h6>
-                {bookedUsers.map((user, index) => (
+                {bookedUsers.map((u, index) => (
                   <div
                     key={index}
                     className={`d-flex align-items-center ${
@@ -201,19 +232,19 @@ const RideCard = ({
                           Name
                         </label>
                         <span className="fw-medium">
-                          {user.name || "Unknown"}
+                          {u.name || "Unknown"}
                         </span>
                       </div>
-                      {user.phone && (
+                      {u.phone && (
                         <div>
                           <label className="text-muted small d-block mb-0">
                             Phone
                           </label>
                           <a
-                            href={`tel:${user.phone}`}
+                            href={`tel:${u.phone}`}
                             className="text-decoration-none text-dark fw-medium"
                           >
-                            {user.phone}
+                            {u.phone}
                           </a>
                         </div>
                       )}
@@ -228,7 +259,7 @@ const RideCard = ({
                       if (trackedRideId === rideId) {
                         stopTrackingSession();
                       } else {
-                        startTrackingSession(rideId, "driver");
+                        startTrackingSession(rideId!, "driver");
                         window.scrollTo({ top: 0, behavior: 'smooth' });
                       }
                     }}
@@ -259,7 +290,7 @@ const RideCard = ({
         </div>
       )}
 
-      {!isPast && showBookButton && !isOwnRide && seatsAvailable > 0 && (
+      {!isPast && showBookButton && !isOwnRide && seatsAvailable! > 0 && (
         <button className="btn btn-primary w-100 mt-3" onClick={handleBookRide}>
           Book Ride (₹{pricePerSeat})
         </button>

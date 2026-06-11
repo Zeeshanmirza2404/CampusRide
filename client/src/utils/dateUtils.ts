@@ -1,4 +1,4 @@
-export const isRidePast = (dateStr, timeStr) => {
+export const isRidePast = (dateStr: string | undefined | null, timeStr: string | undefined | null): boolean => {
   if (!dateStr || !timeStr) return false;
 
   const now = new Date();
@@ -6,17 +6,20 @@ export const isRidePast = (dateStr, timeStr) => {
   
   // Parse 12-hour time (e.g., "02:30 PM")
   const [time, modifier] = timeStr.split(' ');
-  let [hours, minutes] = time.split(':');
+  let [hoursStr, minutesStr] = time.split(':');
   
-  if (hours === '12') {
-    hours = '00';
+  let hours = parseInt(hoursStr, 10);
+  let minutes = parseInt(minutesStr, 10);
+
+  if (hours === 12) {
+    hours = 0;
   }
   
   if (modifier === 'PM') {
-    hours = parseInt(hours, 10) + 12;
+    hours += 12;
   }
   
-  rideDate.setHours(parseInt(hours, 10), parseInt(minutes, 10), 0, 0);
+  rideDate.setHours(hours, minutes, 0, 0);
   
   return rideDate < now;
 };

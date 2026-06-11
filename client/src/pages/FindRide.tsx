@@ -8,17 +8,28 @@ import { useMap } from "../context/MapContext";
 import { DEV_CONFIG } from "../config/devConfig";
 import { useNavigate } from "react-router-dom";
 
-const FindRide = () => {
+interface Message {
+  type: "success" | "error";
+  text: string;
+}
+
+interface Filters {
+  from: string;
+  to: string;
+  date: string;
+}
+
+const FindRide: React.FC = () => {
   const { user } = useAuth();
   const { searchRides, bookRide, initiatePayment } = useRides();
   const { isLoaded } = useMap();
   const navigate = useNavigate();
 
-  const [autocompleteFrom, setAutocompleteFrom] = useState(null);
-  const [autocompleteTo, setAutocompleteTo] = useState(null);
+  const [autocompleteFrom, setAutocompleteFrom] = useState<any>(null);
+  const [autocompleteTo, setAutocompleteTo] = useState<any>(null);
 
-  const onFromLoad = (autocomplete) => setAutocompleteFrom(autocomplete);
-  const onToLoad = (autocomplete) => setAutocompleteTo(autocomplete);
+  const onFromLoad = (autocomplete: any) => setAutocompleteFrom(autocomplete);
+  const onToLoad = (autocomplete: any) => setAutocompleteTo(autocomplete);
 
   const onFromPlaceChanged = () => {
     if (autocompleteFrom) {
@@ -34,14 +45,14 @@ const FindRide = () => {
     }
   };
 
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
     from: "",
     to: "",
     date: "",
   });
-  const [message, setMessage] = useState(null);
+  const [message, setMessage] = useState<Message | null>(null);
 
-  const handleFilterChange = (e) => {
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilters((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -52,7 +63,7 @@ const FindRide = () => {
     setFilters({ from: "", to: "", date: "" });
   };
 
-  const handleBookRide = async (rideId, price) => {
+  const handleBookRide = async (rideId: string, price: number) => {
     if (!user) return;
 
     // Check for Bypass
@@ -83,7 +94,7 @@ const FindRide = () => {
     }
 
     // Load Razorpay Script
-    const loadRazorpay = () => {
+    const loadRazorpay = (): Promise<boolean> => {
       return new Promise((resolve) => {
         const script = document.createElement("script");
         script.src = "https://checkout.razorpay.com/v1/checkout.js";
@@ -117,7 +128,7 @@ const FindRide = () => {
       name: "CampusRide",
       description: "Ride Booking Payment",
       order_id: orderResult.order.id,
-      handler: async function (response) {
+      handler: async function (response: any) {
         // On Payment Success -> Create Booking
         const bookingResult = await bookRide(rideId, {
             name: user.name,
@@ -151,7 +162,7 @@ const FindRide = () => {
       },
     };
 
-    const paymentObject = new window.Razorpay(options);
+    const paymentObject = new (window as any).Razorpay(options);
     paymentObject.open();
   };
 

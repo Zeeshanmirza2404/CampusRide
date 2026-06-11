@@ -1,8 +1,9 @@
+import { Request, Response } from "express";
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
-export const signup = async (req, res) => {
+export const signup = async (req: Request, res: Response): Promise<any> => {
   try {
     const { name, email, phone, password, college, role } = req.body;
     
@@ -62,7 +63,7 @@ export const signup = async (req, res) => {
         college: user.college
       }
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("[Backend Signup Error]:", err.message);
     if (err.code === 11000) {
       return res.status(400).json({ 
@@ -77,7 +78,7 @@ export const signup = async (req, res) => {
   }
 };
 
-export const login = async (req, res) => {
+export const login = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
 
@@ -97,7 +98,7 @@ export const login = async (req, res) => {
       });
     }
 
-    const match = await bcrypt.compare(password, user.password);
+    const match = await bcrypt.compare(password, user.password as string);
     if (!match) {
       return res.status(401).json({ 
         success: false, 
@@ -124,7 +125,7 @@ export const login = async (req, res) => {
         college: user.college
       }
     });
-  } catch (err) {
+  } catch (err: any) {
     console.error("[Backend Login Error]:", err.message);
     res.status(500).json({ 
       success: false, 
@@ -133,9 +134,9 @@ export const login = async (req, res) => {
   }
 };
 
-export const getProfile = async (req, res) => {
+export const getProfile = async (req: Request, res: Response): Promise<any> => {
   try {
-    const user = await User.findById(req.user.id).select("-password");
+    const user = await User.findById(req.user!.id).select("-password");
     
     if (!user) {
       return res.status(404).json({ 
@@ -155,7 +156,7 @@ export const getProfile = async (req, res) => {
         college: user.college
       }
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("[Backend Profile Error]:", error.message);
     res.status(500).json({ 
       success: false, 

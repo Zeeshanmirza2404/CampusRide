@@ -1,7 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const PageHeader = ({ title, icon, iconColor = '#2563eb' }) => {
+interface PageHeaderProps {
+  title: string;
+  icon: string;
+  iconColor?: string;
+}
+
+const PageHeader: React.FC<PageHeaderProps> = ({ title, icon, iconColor = '#2563eb' }) => {
   const navigate = useNavigate();
 
   return (

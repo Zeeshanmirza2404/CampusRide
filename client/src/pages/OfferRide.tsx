@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Autocomplete } from "@react-google-maps/api";
 import PageHeader from "../components/PageHeader";
@@ -6,17 +6,16 @@ import { useAuth } from "../context/AuthContext";
 import { useRides } from "../context/RidesContext";
 import { useMap } from "../context/MapContext";
 import { calculateDistance, calculateFare } from "../utils/rideMath";
-import { useEffect } from "react";
 import { DEV_CONFIG } from "../config/devConfig";
 
 // IST helpers (UTC+5:30)
-const getISTDate = () => {
+const getISTDate = (): string => {
   const now = new Date();
   const ist = new Date(now.getTime() + 5.5 * 60 * 60 * 1000);
   return ist.toISOString().split("T")[0]; // "YYYY-MM-DD"
 };
 
-const getISTTime = () => {
+const getISTTime = (): string => {
   const now = new Date();
   const ist = new Date(now.getTime() + 5.5 * 60 * 60 * 1000);
   const h = ist.getUTCHours();
@@ -26,7 +25,7 @@ const getISTTime = () => {
   return `${displayH}:${String(m).padStart(2, "0")} ${meridiem}`;
 };
 
-const toHHMM = (ampmStr) => {
+const toHHMM = (ampmStr: string): string => {
   if (!ampmStr) return "";
   const [timePart, meridiem] = ampmStr.split(" ");
   if (!meridiem) return ampmStr;
@@ -36,17 +35,34 @@ const toHHMM = (ampmStr) => {
   return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
 };
 
-const OfferRide = () => {
+interface Coords {
+  lat: number;
+  lng: number;
+}
+
+interface FormData {
+  pickup: string;
+  pickupCoords: Coords | null;
+  drop: string;
+  dropCoords: Coords | null;
+  date: string;
+  time: string;
+  seats: string;
+  price: string;
+  details: string;
+}
+
+const OfferRide: React.FC = () => {
   const { user } = useAuth();
   const { createRide } = useRides();
   const { isLoaded } = useMap();
   const navigate = useNavigate();
 
-  const [pickupAutocomplete, setPickupAutocomplete] = useState(null);
-  const [dropAutocomplete, setDropAutocomplete] = useState(null);
+  const [pickupAutocomplete, setPickupAutocomplete] = useState<any>(null);
+  const [dropAutocomplete, setDropAutocomplete] = useState<any>(null);
 
-  const onPickupLoad = (autocomplete) => setPickupAutocomplete(autocomplete);
-  const onDropLoad = (autocomplete) => setDropAutocomplete(autocomplete);
+  const onPickupLoad = (autocomplete: any) => setPickupAutocomplete(autocomplete);
+  const onDropLoad = (autocomplete: any) => setDropAutocomplete(autocomplete);
 
   const onPickupPlaceChanged = () => {
     if (pickupAutocomplete) {
@@ -76,7 +92,7 @@ const OfferRide = () => {
     }
   };
 
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     pickup: "",
     pickupCoords: null,
     drop: "",
@@ -88,7 +104,7 @@ const OfferRide = () => {
     details: "",
   });
 
-  const [calculatedDistance, setCalculatedDistance] = useState(null);
+  const [calculatedDistance, setCalculatedDistance] = useState<number | null>(null);
 
   useEffect(() => {
     if (formData.pickupCoords && formData.dropCoords) {
@@ -104,23 +120,23 @@ const OfferRide = () => {
     }
   }, [formData.pickupCoords, formData.dropCoords]);
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
     }));
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!user) return;
 
     const result = await createRide({
       pickup: formData.pickup,
-      pickupCoords: formData.pickupCoords,
+      pickupCoords: formData.pickupCoords ?? undefined,
       drop: formData.drop,
-      dropCoords: formData.dropCoords,
+      dropCoords: formData.dropCoords ?? undefined,
       date: formData.date,
       time: formData.time,
       seatsAvailable: parseInt(formData.seats),

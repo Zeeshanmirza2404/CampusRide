@@ -23,8 +23,17 @@ const destinationIcon = L.icon({
   iconAnchor: [17, 35],
 });
 
+interface Coords {
+  lat: number;
+  lng: number;
+}
+
+interface RecenterMapProps {
+  center?: Coords | null;
+}
+
 // Component to handle map view updates
-const RecenterMap = ({ center }) => {
+const RecenterMap: React.FC<RecenterMapProps> = ({ center }) => {
   const map = useMap();
   useEffect(() => {
     if (center && center.lat && center.lng) {
@@ -34,7 +43,16 @@ const RecenterMap = ({ center }) => {
   return null;
 };
 
-const LeafletMap = ({ 
+interface LeafletMapProps {
+  center?: Coords;
+  driverLocation?: Coords | null;
+  riderLocation?: Coords | null;
+  pickupCoords?: Coords | null;
+  dropCoords?: Coords | null;
+  rideStatus?: string | null;
+}
+
+const LeafletMap: React.FC<LeafletMapProps> = ({ 
   center, 
   driverLocation, 
   riderLocation, 
@@ -42,20 +60,20 @@ const LeafletMap = ({
   dropCoords, 
   rideStatus 
 }) => {
-  const [routeData, setRouteData] = useState([]);
+  const [routeData, setRouteData] = useState<[number, number][]>([]);
   const ORS_API_KEY = import.meta.env.VITE_OPENROUTE_API_KEY;
 
   // Validate coordinates
-  const isValid = (c) => c && typeof c.lat === 'number' && typeof c.lng === 'number';
+  const isValid = (c: any): c is Coords => c && typeof c.lat === 'number' && typeof c.lng === 'number';
 
   // Fetch Route from OpenRouteService
   useEffect(() => {
     const fetchRoute = async () => {
       if (!ORS_API_KEY || !driverLocation) return;
 
-      let target = null;
-      if (rideStatus === "accepted") target = pickupCoords;
-      else if (rideStatus === "ongoing") target = dropCoords;
+      let target: Coords | null = null;
+      if (rideStatus === "accepted") target = pickupCoords ?? null;
+      else if (rideStatus === "ongoing") target = dropCoords ?? null;
 
       if (!isValid(target)) return;
 
@@ -65,7 +83,7 @@ const LeafletMap = ({
         const data = await response.json();
         
         if (data.features && data.features.length > 0) {
-          const coords = data.features[0].geometry.coordinates.map(c => [c[1], c[0]]);
+          const coords = data.features[0].geometry.coordinates.map((c: any) => [c[1], c[0]]);
           setRouteData(coords);
         } else {
           // Fallback to straight line if ORS fails

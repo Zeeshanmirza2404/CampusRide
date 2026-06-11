@@ -1,6 +1,15 @@
 import React from 'react';
 
-const EmptyState = ({
+interface EmptyStateProps {
+  icon: string;
+  title: string;
+  description: string;
+  buttonText: string;
+  buttonIcon?: string;
+  onButtonClick: () => void;
+}
+
+const EmptyState: React.FC<EmptyStateProps> = ({
   icon,
   title,
   description,

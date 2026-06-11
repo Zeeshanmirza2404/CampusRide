@@ -1,11 +1,14 @@
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
+import { io, Socket } from "socket.io-client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { io } from "socket.io-client";
+interface SocketContextType {
+  socket: Socket | null;
+}
 
-const SocketContext = createContext();
+const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
-export const SocketProvider = ({ children }) => {
-  const [socket, setSocket] = useState(null);
+export const SocketProvider = ({ children }: { children: ReactNode }) => {
+  const [socket, setSocket] = useState<Socket | null>(null);
 
   useEffect(() => {
     // Replace with your backend URL
@@ -15,7 +18,7 @@ export const SocketProvider = ({ children }) => {
 
     setSocket(newSocket);
 
-    return () => newSocket.close();
+    return () => { newSocket.close(); };
   }, []);
 
   return (
@@ -25,4 +28,4 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
-export const useSocket = () => useContext(SocketContext);
+export const useSocket = (): SocketContextType | undefined => useContext(SocketContext);

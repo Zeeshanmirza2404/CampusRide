@@ -4,8 +4,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useTracking, useDriverTracking, useRiderTracking } from '../context/TrackingContext';
 import LeafletMap from '../maps/LeafletMap';
 
-const LiveTracking = () => {
-  const { rideId } = useParams();
+const LiveTracking: React.FC = () => {
+  const { rideId } = useParams<{ rideId: string }>();
   const navigate = useNavigate();
   const { 
     trackedRideId, userRole, rideStatus, 
@@ -24,11 +24,11 @@ const LiveTracking = () => {
     if (!trackedRideId || trackedRideId !== rideId) {
       // For this page, we assume local navigation. Role should be determined by context/state.
       // We'll try to find a way to verify role soon, for now, we'll keep previous session or default to 'rider'
-      startTrackingSession(rideId, userRole || 'rider');
+      startTrackingSession(rideId!, userRole || 'rider');
     }
   }, [rideId, trackedRideId, userRole, startTrackingSession]);
 
-  const getStatusLabel = () => {
+  const getStatusLabel = (): string => {
     switch (rideStatus) {
       case "searching": return "Finding Driver";
       case "accepted": return "Driver Heading to Pickup";
@@ -38,7 +38,7 @@ const LiveTracking = () => {
     }
   };
 
-  const getStatusColor = () => {
+  const getStatusColor = (): string => {
     switch (rideStatus) {
       case "accepted": return "var(--warning)";
       case "ongoing": return "var(--primary)";
@@ -62,7 +62,7 @@ const LiveTracking = () => {
       </AnimatePresence>
 
       <div className="row g-0 h-100">
-        <div className="col-12 col-lg-8 position-relative" style={{ height: 'calc(100vh - 80px)', lg: { height: '100vh' } }}>
+        <div className="col-12 col-lg-8 position-relative" style={{ height: 'calc(100vh - 80px)' }}>
            <LeafletMap 
               driverLocation={driverLocation} 
               riderLocation={riderLocation}
@@ -71,7 +71,7 @@ const LiveTracking = () => {
               rideStatus={rideStatus}
            />
            
-           {/* Floating Floating HUD */}
+           {/* Floating HUD */}
            <div className="position-absolute top-0 start-0 w-100 p-4 d-flex justify-content-between align-items-center" style={{ zIndex: 1000 }}>
              <button className="btn btn-glass-dark border-0 rounded-circle shadow" onClick={() => navigate(-1)}>
                <i className="bi bi-arrow-left h5 mb-0 text-white"></i>

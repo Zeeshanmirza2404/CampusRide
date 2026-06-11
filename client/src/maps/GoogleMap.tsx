@@ -1,7 +1,17 @@
-
 import React from 'react';
 
-const GoogleMap = ({ center, markers, polylinePath }) => {
+interface GoogleMapProps {
+  center?: { lat: number; lng: number };
+  markers?: any[];
+  polylinePath?: any[];
+  driverLocation?: { lat: number; lng: number } | null;
+  riderLocation?: { lat: number; lng: number } | null;
+  pickupCoords?: { lat: number; lng: number } | null;
+  dropCoords?: { lat: number; lng: number } | null;
+  rideStatus?: string | null;
+}
+
+const GoogleMap: React.FC<GoogleMapProps> = ({ center, markers, polylinePath }) => {
   return (
     <div 
       style={{ 

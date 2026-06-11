@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
-const Signup = () => {
+const Signup: React.FC = () => {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -17,7 +17,7 @@ const Signup = () => {
   const { signup } = useAuth();
   const navigate = useNavigate();
 
-  const handleChange = (e) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
       [e.target.name]: e.target.value,
@@ -25,7 +25,7 @@ const Signup = () => {
     if (error) setError("");
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 

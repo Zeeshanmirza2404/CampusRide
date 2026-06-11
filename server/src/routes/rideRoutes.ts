@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Router } from "express";
 import {
   createRide,
   getRides,
@@ -8,12 +8,12 @@ import {
 } from "../controllers/rideController.js";
 import authMiddleware from "../middleware/authMiddleware.js";
 
-const router = express.Router();
+const router: Router = express.Router();
 
-router.post("/", authMiddleware, createRide);
-router.get("/user", authMiddleware, getUserRides);
+router.post("/", authMiddleware as any, createRide);
+router.get("/user", authMiddleware as any, getUserRides);
 router.get("/", getRides);
-router.put("/:id", authMiddleware, updateRide);
-router.delete("/:id", authMiddleware, deleteRide);
+router.put("/:id", authMiddleware as any, updateRide);
+router.delete("/:id", authMiddleware as any, deleteRide);
 
 export default router;

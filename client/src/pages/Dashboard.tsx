@@ -9,14 +9,14 @@ import { useAuth } from "../context/AuthContext";
 import { useRides } from "../context/RidesContext";
 import { isRidePast } from "../utils/dateUtils";
 
-const Dashboard = () => {
+const Dashboard: React.FC = () => {
   const { user } = useAuth();
   const { getUserRides, getUserBookings, rides, userRides } = useRides();
   const navigate = useNavigate();
   
   // Determine default tab based on role and available features
   const isDriver = user?.role === 'driver' || user?.role === 'both';
-  const isRider = user?.role === 'rider' || user?.role === 'both' || user?.role === 'bus_rider';
+  const isRider = user?.role === 'rider' || user?.role === 'both' || (user?.role as string) === 'bus_rider';
   
   const [activeTab, setActiveTab] = useState(isDriver ? "rides" : "bookings");
   const [showPastRides, setShowPastRides] = useState(false);
@@ -27,14 +27,15 @@ const Dashboard = () => {
 
   const myRides = userRides
     .map(ride => ({ ...ride, isPast: isRidePast(ride.date, ride.time) }))
-    .sort((a, b) => new Date(`${b.date}T${b.time}`) - new Date(`${a.date}T${a.time}`));
+    .sort((a, b) => (new Date(`${b.date}T${b.time}`) as any) - (new Date(`${a.date}T${a.time}`) as any));
 
   const activeRides = myRides.filter(r => !r.isPast);
   const pastRides = myRides.filter(r => r.isPast);
 
-  const myBookings = getUserBookings(user.id)
+  // TODO: type this properly
+  const myBookings = (getUserBookings(user.id) as any[])
     .map(booking => ({ ...booking, isPast: isRidePast(booking.ride.date, booking.ride.time) }))
-    .sort((a, b) => new Date(`${b.ride.date}T${b.ride.time}`) - new Date(`${a.ride.date}T${a.ride.time}`));
+    .sort((a, b) => (new Date(`${b.ride.date}T${b.ride.time}`) as any) - (new Date(`${a.ride.date}T${a.ride.time}`) as any));
 
   const activeBookings = myBookings.filter(b => !b.isPast);
   const pastBookings = myBookings.filter(b => b.isPast);
@@ -165,7 +166,6 @@ const Dashboard = () => {
 
           <div className="row">
             <div className="col-12">
-              {/* Active Rides */}
               {/* Rides Tab Content */}
               {isDriver && activeTab === "rides" && (
                 <>
@@ -242,7 +242,6 @@ const Dashboard = () => {
                 </>
               )}
 
-              {/* Active Bookings */}
               {/* Bookings Tab Content */}
               {isRider && activeTab === "bookings" && (
                 <>

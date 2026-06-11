@@ -1,3 +1,4 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { SocketProvider } from './context/SocketContext';
@@ -14,7 +15,7 @@ import './index.css';
 import BookingSuccess from './pages/BookingSuccess';
 import LiveTracking from './pages/LiveTracking';
 
-const App = () => (
+const App: React.FC = () => (
   <AuthProvider>
     <SocketProvider>
       <MapProvider>

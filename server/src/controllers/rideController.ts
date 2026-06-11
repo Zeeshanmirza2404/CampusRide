@@ -1,10 +1,11 @@
+import { Request, Response } from "express";
 import Ride from "../models/Ride.js";
 import User from "../models/User.js";
 
-export const createRide = async (req, res) => {
+export const createRide = async (req: Request, res: Response): Promise<any> => {
   try {
     const { pickup, drop, pickupCoords, dropCoords, date, time, seatsAvailable, pricePerSeat, details } = req.body;
-    const driverId = req.user.id;
+    const driverId = req.user!.id;
 
     const ride = await Ride.create({
       driver: driverId,
@@ -25,23 +26,24 @@ export const createRide = async (req, res) => {
 
     // Populate driver details
     const populatedRide = await Ride.findById(ride._id).populate("driver");
+    const populatedRideAny = populatedRide as any; // TODO: type this properly
 
     res.status(201).json({
-      id: populatedRide._id,
-      driverId: populatedRide.driver._id,
-      driverName: populatedRide.driver.name,
-      driverPhone: populatedRide.driver.phone,
-      driverCollege: populatedRide.driver.college,
-      pickup: populatedRide.pickup,
-      pickupCoords: populatedRide.pickupCoords,
-      drop: populatedRide.drop,
-      dropCoords: populatedRide.dropCoords,
-      date: populatedRide.date,
-      time: populatedRide.time,
-      seatsAvailable: populatedRide.seatsAvailable,
-      pricePerSeat: populatedRide.pricePerSeat,
-      status: populatedRide.status,
-      details: populatedRide.details
+      id: populatedRideAny._id,
+      driverId: populatedRideAny.driver._id,
+      driverName: populatedRideAny.driver.name,
+      driverPhone: populatedRideAny.driver.phone,
+      driverCollege: populatedRideAny.driver.college,
+      pickup: populatedRideAny.pickup,
+      pickupCoords: populatedRideAny.pickupCoords,
+      drop: populatedRideAny.drop,
+      dropCoords: populatedRideAny.dropCoords,
+      date: populatedRideAny.date,
+      time: populatedRideAny.time,
+      seatsAvailable: populatedRideAny.seatsAvailable,
+      pricePerSeat: populatedRideAny.pricePerSeat,
+      status: populatedRideAny.status,
+      details: populatedRideAny.details
     });
   } catch (error) {
     console.error("Error creating ride:", error);
@@ -49,7 +51,7 @@ export const createRide = async (req, res) => {
   }
 };
 
-export const getRides = async (req, res) => {
+export const getRides = async (req: Request, res: Response): Promise<any> => {
   try {
     // Mark expired rides as inactive
     const today = new Date();
@@ -64,7 +66,7 @@ export const getRides = async (req, res) => {
       .select("-createdAt -updatedAt");
 
     res.json(
-      rides.map((ride) => ({
+      rides.map((ride: any) => ({ // TODO: type this properly
         id: ride._id,
         driverId: ride.driver._id,
         driverName: ride.driver.name,
@@ -88,9 +90,9 @@ export const getRides = async (req, res) => {
   }
 };
 
-export const getUserRides = async (req, res) => {
+export const getUserRides = async (req: Request, res: Response): Promise<any> => {
   try {
-    const userId = req.user.id;
+    const userId = req.user!.id;
     console.log("[DEBUG] Fetching rides for user:", userId);
 
     const user = await User.findById(userId).populate({
@@ -109,7 +111,7 @@ export const getUserRides = async (req, res) => {
     console.log("[DEBUG] Found user rides count:", user.myRides.length);
 
     res.json(
-      user.myRides.map((ride) => ({
+      (user.myRides as any[]).map((ride) => ({ // TODO: type this properly
         id: ride._id,
         driverId: ride.driver._id,
         driverName: ride.driver.name,
@@ -126,7 +128,7 @@ export const getUserRides = async (req, res) => {
         status: ride.status,
         details: ride.details,
         bookedUsers: ride.bookedBy && ride.bookedBy.length > 0 
-          ? ride.bookedBy.map(u => ({ 
+          ? ride.bookedBy.map((u: any) => ({ 
               id: u._id, 
               name: u.name, 
               phone: u.phone 
@@ -140,10 +142,10 @@ export const getUserRides = async (req, res) => {
   }
 };
 
-export const updateRide = async (req, res) => {
+export const updateRide = async (req: Request, res: Response): Promise<any> => {
   try {
     const { id } = req.params;
-    const driverId = req.user.id;
+    const driverId = req.user!.id;
 
     const ride = await Ride.findById(id);
     if (!ride) {
@@ -157,21 +159,22 @@ export const updateRide = async (req, res) => {
     const updatedRide = await Ride.findByIdAndUpdate(id, req.body, {
       new: true
     }).populate("driver");
+    const updatedRideAny = updatedRide as any; // TODO: type this properly
 
     res.json({
-      id: updatedRide._id,
-      driverId: updatedRide.driver._id,
-      driverName: updatedRide.driver.name,
-      driverPhone: updatedRide.driver.phone,
-      driverCollege: updatedRide.driver.college,
-      pickup: updatedRide.pickup,
-      drop: updatedRide.drop,
-      date: updatedRide.date,
-      time: updatedRide.time,
-      seatsAvailable: updatedRide.seatsAvailable,
-      pricePerSeat: updatedRide.pricePerSeat,
-      status: updatedRide.status,
-      details: updatedRide.details
+      id: updatedRideAny._id,
+      driverId: updatedRideAny.driver._id,
+      driverName: updatedRideAny.driver.name,
+      driverPhone: updatedRideAny.driver.phone,
+      driverCollege: updatedRideAny.driver.college,
+      pickup: updatedRideAny.pickup,
+      drop: updatedRideAny.drop,
+      date: updatedRideAny.date,
+      time: updatedRideAny.time,
+      seatsAvailable: updatedRideAny.seatsAvailable,
+      pricePerSeat: updatedRideAny.pricePerSeat,
+      status: updatedRideAny.status,
+      details: updatedRideAny.details
     });
   } catch (error) {
     console.error("Error updating ride:", error);
@@ -179,10 +182,10 @@ export const updateRide = async (req, res) => {
   }
 };
 
-export const deleteRide = async (req, res) => {
+export const deleteRide = async (req: Request, res: Response): Promise<any> => {
   try {
     const { id } = req.params;
-    const driverId = req.user.id;
+    const driverId = req.user!.id;
 
     const ride = await Ride.findById(id);
     if (!ride) {

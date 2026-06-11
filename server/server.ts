@@ -1,14 +1,14 @@
 import "dotenv/config";
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import http from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import connectDB from "./config/db.js";
+import connectDB from "./src/config/db.js";
 
-import authRoutes from "./routes/authRoutes.js";
-import rideRoutes from "./routes/rideRoutes.js";
-import bookingRoutes from "./routes/bookingRoutes.js";
-import paymentRoutes from "./routes/paymentRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
+import rideRoutes from "./src/routes/rideRoutes.js";
+import bookingRoutes from "./src/routes/bookingRoutes.js";
+import paymentRoutes from "./src/routes/paymentRoutes.js";
 import { initializeSocket } from "./socketHandler.js";
 
 const app = express();
@@ -30,13 +30,13 @@ app.use(cors({
 app.use(express.json());
 
 // Attach io to req
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   req.io = io;
   next();
 });
 
 // Request logging middleware for debugging
-app.use((req, res, next) => {
+app.use((req: Request, res: Response, next: NextFunction) => {
   console.log(`[${new Date().toISOString()}] ${req.method} ${req.path}`);
   next();
 });

@@ -1,10 +1,33 @@
-import React, { createContext, useContext, useState, useEffect } from "react";
+import React, { createContext, useContext, useState, useEffect, ReactNode } from "react";
 import API from "../services/api";
 
-const AuthContext = createContext(undefined);
+interface User {
+  id: string;
+  name?: string;
+  email: string;
+  phone?: string;
+  role: "rider" | "driver" | "both";
+  college?: string;
+}
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
+interface AuthResult {
+  success: boolean;
+  message?: string;
+}
+
+interface AuthContextType {
+  user: User | null;
+  loading: boolean;
+  isAuthenticated: boolean;
+  login: (email: string, password: string) => Promise<AuthResult>;
+  signup: (userData: Record<string, string>) => Promise<AuthResult>;
+  logout: () => void;
+}
+
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
+  const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -15,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     setLoading(false);
   }, []);
 
-  const login = async (email, password) => {
+  const login = async (email: string, password: string): Promise<AuthResult> => {
     try {
       const response = await API.post("/auth/login", { email, password });
       
@@ -34,7 +57,7 @@ export const AuthProvider = ({ children }) => {
         success: false,
         message: response.data.message || "Login failed",
       };
-    } catch (err) {
+    } catch (err: any) {
       console.error("[AuthContext Login Error]:", err);
       return {
         success: false,
@@ -43,7 +66,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const signup = async (userData) => {
+  const signup = async (userData: Record<string, string>): Promise<AuthResult> => {
     try {
       const response = await API.post("/auth/signup", userData);
       
@@ -62,7 +85,7 @@ export const AuthProvider = ({ children }) => {
         success: false,
         message: response.data.message || "Signup failed",
       };
-    } catch (err) {
+    } catch (err: any) {
       console.error("[AuthContext Signup Error]:", err);
       return {
         success: false,
@@ -71,7 +94,7 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  const logout = () => {
+  const logout = (): void => {
     setUser(null);
     localStorage.removeItem("campusride_user");
     localStorage.removeItem("campusride_token");
@@ -86,7 +109,7 @@ export const AuthProvider = ({ children }) => {
   );
 };
 
-export const useAuth = () => {
+export const useAuth = (): AuthContextType => {
   const context = useContext(AuthContext);
   if (!context) {
     throw new Error("useAuth must be used within AuthProvider");

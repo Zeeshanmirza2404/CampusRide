@@ -1,18 +1,19 @@
+import { Server } from "socket.io";
 import jwt from "jsonwebtoken";
-import Ride from "./models/Ride.js";
+import Ride from "./src/models/Ride.js";
 
 const JWT_SECRET = process.env.JWT_SECRET || "campusride_secret";
 
-export const initializeSocket = (io) => {
+export const initializeSocket = (io: Server): void => {
   // 1. JWT Authentication Middleware for Socket
-  io.use((socket, next) => {
+  io.use((socket: any, next) => { // TODO: type this properly
     try {
       const token = socket.handshake.auth.token || socket.handshake.headers.token;
       if (!token) {
         return next(new Error("Authentication error: No token provided"));
       }
 
-      jwt.verify(token, JWT_SECRET, (err, decoded) => {
+      jwt.verify(token, JWT_SECRET, (err: any, decoded: any) => {
         if (err) return next(new Error("Authentication error: Invalid token"));
         socket.user = decoded; // Store user details in socket
         next();
@@ -22,11 +23,11 @@ export const initializeSocket = (io) => {
     }
   });
 
-  io.on("connection", (socket) => {
+  io.on("connection", (socket: any) => { // TODO: type this properly
     console.log(`[Socket] User connected: ${socket.user.id} (Socket ID: ${socket.id})`);
 
     // Join Ride Room (validate user is part of the ride)
-    socket.on("joinRideRoom", async ({ rideId }) => {
+    socket.on("joinRideRoom", async ({ rideId }: { rideId: string }) => {
         if (!rideId) return;
         try {
             const ride = await Ride.findById(rideId);
@@ -57,7 +58,7 @@ export const initializeSocket = (io) => {
     });
 
     // Handle Ride Status Transitions (Searching -> Accepted -> Ongoing -> Completed)
-    socket.on("updateRideStatus", async ({ rideId, status }) => {
+    socket.on("updateRideStatus", async ({ rideId, status }: { rideId: string, status: string }) => {
         try {
             const ride = await Ride.findById(rideId);
             if (!ride) return;
@@ -67,7 +68,7 @@ export const initializeSocket = (io) => {
                 return socket.emit("roomError", { message: "Only drivers can update ride status" });
             }
 
-            ride.status = status;
+            ride.status = status as any;
             if (status === "ongoing") {
                 ride.trackingActive = true;
             } else if (status === "completed") {
@@ -85,7 +86,7 @@ export const initializeSocket = (io) => {
     });
 
     // Start Tracking (Manual trigger for Driver)
-    socket.on("startTracking", async ({ rideId }) => {
+    socket.on("startTracking", async ({ rideId }: { rideId: string }) => {
         try {
             const ride = await Ride.findById(rideId);
             if (ride && ride.driver.toString() === socket.user.id) {
@@ -100,7 +101,7 @@ export const initializeSocket = (io) => {
     });
 
     // Handle Location Update
-    socket.on("driverLocationUpdate", async ({ rideId, location }) => {
+    socket.on("driverLocationUpdate", async ({ rideId, location }: { rideId: string, location: any }) => {
         // Unidirectional: Driver broadcasts to room
         socket.to(rideId).emit("locationUpdated", { location });
 
@@ -122,11 +123,8 @@ export const initializeSocket = (io) => {
         }
     });
 
-    // Rider Location (Disabled as per Production Requirements: Rider is passive)
-    // socket.on("riderLocationUpdate", ...) - Removed
-
     // Stop Tracking
-    socket.on("stopTracking", async ({ rideId }) => {
+    socket.on("stopTracking", async ({ rideId }: { rideId: string }) => {
         try {
             const ride = await Ride.findById(rideId);
             if (ride && ride.driver.toString() === socket.user.id) {
@@ -140,7 +138,7 @@ export const initializeSocket = (io) => {
     });
     
     // Leave Room
-    socket.on("leaveRideRoom", ({ rideId }) => {
+    socket.on("leaveRideRoom", ({ rideId }: { rideId: string }) => {
         if (rideId) {
             socket.leave(rideId);
             console.log(`[Socket Success] User ${socket.user.id} left room ${rideId}`);

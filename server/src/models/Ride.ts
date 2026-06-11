@@ -1,8 +1,36 @@
-import mongoose from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
-const rideSchema = new mongoose.Schema(
+export interface IRide extends Document {
+  driver: mongoose.Types.ObjectId;
+  pickup: string;
+  pickupCoords: {
+    lat: number;
+    lng: number;
+  };
+  drop: string;
+  dropCoords: {
+    lat: number;
+    lng: number;
+  };
+  date: Date;
+  time: string;
+  seatsAvailable: number;
+  pricePerSeat: number;
+  status: "searching" | "active" | "booked" | "accepted" | "ongoing" | "completed" | "inactive";
+  lastKnownLocation?: {
+    lat: number;
+    lng: number;
+  };
+  trackingActive: boolean;
+  bookedBy: mongoose.Types.ObjectId[];
+  details?: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const rideSchema = new Schema<IRide>(
   {
-    driver: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+    driver: { type: Schema.Types.ObjectId, ref: "User" },
     pickup: String,
     pickupCoords: {
       lat: Number,
@@ -23,10 +51,10 @@ const rideSchema = new mongoose.Schema(
       lng: Number
     },
     trackingActive: { type: Boolean, default: false },
-    bookedBy: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    bookedBy: [{ type: Schema.Types.ObjectId, ref: "User" }],
     details: String
   },
   { timestamps: true }
 );
 
-export default mongoose.model("Ride", rideSchema);
+export default mongoose.model<IRide>("Ride", rideSchema);
